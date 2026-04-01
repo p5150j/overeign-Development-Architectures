@@ -11,10 +11,11 @@
 5. [VS Code + Roo Code Setup](#5-vs-code--roo-code-setup)
 6. [Aider Setup (Terminal / Git Workflow)](#6-aider-setup-terminal--git-workflow)
 7. [Reading Live Documentation (MCP + Playwright)](#7-reading-live-documentation-mcp--playwright)
-8. [Hybrid API Fallback (DeepSeek V3.2)](#8-hybrid-api-fallback-deepseek-v32)
-9. [Performance Tuning](#9-performance-tuning)
-10. [Daily Workflow Guide](#10-daily-workflow-guide)
-11. [Troubleshooting](#11-troubleshooting)
+8. [Vision & Multimodal (Analyzing Images Locally)](#8-vision--multimodal-analyzing-images-locally)
+9. [Hybrid API Fallback (DeepSeek V3.2)](#9-hybrid-api-fallback-deepseek-v32)
+10. [Performance Tuning](#10-performance-tuning)
+11. [Daily Workflow Guide](#11-daily-workflow-guide)
+12. [Troubleshooting](#12-troubleshooting)
 
 ---
 
@@ -521,7 +522,95 @@ Roo Code will:
 
 ---
 
-## 8. Hybrid API Fallback (DeepSeek V3.2)
+## 8. Vision & Multimodal (Analyzing Images Locally)
+
+Need to analyze screenshots, mockups, design files, or any image? Use a vision-capable LLM locally — no cloud API needed.
+
+### Install the Vision Model
+
+```bash
+ollama pull qwen2.5vl:7b
+```
+
+- Size on disk: ~5GB
+- VRAM usage: ~8GB loaded
+- Capabilities: Image understanding, OCR, UI analysis, design critique
+
+### Test the Model
+
+```bash
+# Analyze a screenshot
+ollama run qwen2.5vl:7b "Describe this image" /path/to/screenshot.png
+
+# Or use a URL
+ollama run qwen2.5vl:7b "What colors are used in this design?" https://example.com/mockup.png
+```
+
+### Using Vision in Roo Code
+
+1. Switch to the vision model:
+   - Open Roo Code settings (gear icon)
+   - Change Model to `qwen2.5vl:7b`
+
+2. Add images to context:
+   - Drag and drop image files into the chat
+   - Or use the attachment button
+
+3. Ask about the image:
+   ```
+   What's the color palette in this design?
+   Describe the layout and UI components
+   Read the text visible in this screenshot
+   Compare this mockup to the current implementation
+   ```
+
+### Using Vision in Aider
+
+Aider doesn't natively support image input, but you can:
+
+1. Use `ollama run` directly for image analysis:
+   ```bash
+   ollama run qwen2.5vl:7b "Analyze this UI screenshot and describe the layout" ./screenshot.png
+   ```
+
+2. Copy the analysis into your Aider session as context
+
+### Vision Model Capabilities
+
+| Task | Quality |
+|------|---------|
+| UI/Layout description | Excellent |
+| Color identification | Excellent |
+| Text/OCR reading | Good |
+| Design critique | Good |
+| Code from screenshot | Moderate (use for reference only) |
+
+### When to Use Vision
+
+- **Design implementation** — Analyze mockups before coding
+- **Bug reports** — Understand screenshots of UI issues
+- **UI audits** — Check accessibility, contrast, layout
+- **Documentation** — Extract info from diagrams or charts
+- **Competitive analysis** — Study other app interfaces
+
+### VRAM Considerations
+
+The vision model (8GB) can coexist with the MoE model (qwen3.5:35b-a3b at 8GB active), but not with the 27B or 32B models. When switching:
+
+```bash
+# Restart Ollama to clear VRAM before switching to vision
+sudo systemctl restart ollama
+ollama run qwen2.5vl:7b
+```
+
+Or let Ollama auto-switch (slower, but it handles unloading):
+```bash
+ollama run qwen2.5vl:7b "Analyze this" ./image.png
+```
+
+---
+
+## 9. Hybrid API Fallback (DeepSeek V3.2)
 
 For the hard 20% of tasks — complex multi-file architectural refactors, security-sensitive logic, very long context sessions — use a cheap cloud API instead of burning time on local inference. DeepSeek V3.2 at $0.27/million input tokens is the consensus choice.
 
@@ -569,7 +658,7 @@ Switch when your task involves:
 
 ---
 
-## 8. Performance Tuning
+## 10. Performance Tuning
 
 ### Verify GPU Is Being Used (Not CPU)
 
@@ -636,7 +725,7 @@ sudo systemctl cat ollama | grep FLASH
 
 ---
 
-## 9. Daily Workflow Guide
+## 11. Daily Workflow Guide
 
 ### The Decision Tree — Which Tool For What
 
@@ -700,7 +789,7 @@ git rebase -i HEAD~5  # Squash last 5 commits
 
 ---
 
-## 10. Troubleshooting
+## 12. Troubleshooting
 
 ### Ollama Not Using GPU
 ```bash

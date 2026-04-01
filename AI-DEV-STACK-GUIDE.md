@@ -12,8 +12,9 @@ A complete guide to running your sovereign AI coding stack with Ollama, Roo Code
 4. [Aider (Terminal)](#aider-terminal)
 5. [Ollama Management](#ollama-management)
 6. [Workflow Patterns](#workflow-patterns)
-7. [Reading Live Documentation (MCP)](#reading-live-documentation-mcp)
-8. [Cloud Fallback](#cloud-fallback)
+7. [Vision & Image Analysis](#vision--image-analysis)
+8. [Reading Live Documentation (MCP)](#reading-live-documentation-mcp)
+9. [Cloud Fallback](#cloud-fallback)
 9. [Performance Tuning](#performance-tuning)
 10. [Troubleshooting](#troubleshooting)
 11. [Configuration Reference](#configuration-reference)
@@ -46,6 +47,7 @@ A complete guide to running your sovereign AI coding stack with Ollama, Roo Code
 | `qwen3.5:35b-a3b` | 23GB | ~8GB active | MoE efficiency - fast inference |
 | `qwen2.5-coder:32b` | 19GB | ~20GB | Pure code generation |
 | `deepseek-r1:32b` | 19GB | ~20GB | Complex reasoning & debugging |
+| `qwen2.5vl:7b` | 5GB | ~8GB | Vision/multimodal - image analysis |
 
 ---
 
@@ -70,6 +72,9 @@ What are you doing?
 │
 ├─► Multi-file refactoring
 │   └─► qwen3.5:27b + Aider (git safety)
+│
+├─► Analyzing images/screenshots/mockups
+│   └─► qwen2.5vl:7b (vision model)
 │
 └─► Task exceeds local capability
     └─► OpenRouter fallback (DeepSeek V3.2)
@@ -102,6 +107,13 @@ What are you doing?
 - Architecture decisions
 - Understanding legacy code
 - When you need "thinking" through problems
+
+**qwen2.5vl:7b** (Vision)
+- Analyzing screenshots and UI mockups
+- Design-to-code workflows
+- Reading text from images (OCR)
+- Identifying colors, layouts, components
+- Fits alongside other models (only 8GB VRAM)
 
 ---
 
@@ -370,6 +382,65 @@ aider --model openrouter/deepseek/deepseek-chat-v3-0324 src/complex_feature.py
 ```
 
 **Best for:** Complex architectural work, security-critical code
+
+---
+
+## Vision & Image Analysis
+
+Analyze screenshots, mockups, and design files locally using the vision model.
+
+### Pulling the Vision Model
+
+```bash
+ollama pull qwen2.5vl:7b
+```
+
+### Using Vision in Roo Code
+
+1. Switch model to `qwen2.5vl:7b` in settings
+2. Drag and drop images into the chat
+3. Ask questions about the image
+
+**Example prompts:**
+```
+What colors are used in this design?
+Describe the layout and components
+Read the text in this screenshot
+How would you implement this UI in React?
+```
+
+### Using Vision from Terminal
+
+```bash
+# Analyze an image directly
+ollama run qwen2.5vl:7b "Describe this UI" ./screenshot.png
+
+# Extract colors from a design
+ollama run qwen2.5vl:7b "What is the color palette?" ./mockup.png
+
+# Read text from a screenshot
+ollama run qwen2.5vl:7b "What text is visible?" ./error_screenshot.png
+```
+
+### Pattern 6: Design-to-Code (Vision + Code Model)
+
+```bash
+# Step 1: Analyze the mockup with vision model
+ollama run qwen2.5vl:7b "Describe this UI layout, colors, and components in detail" ./design.png
+
+# Step 2: Copy the description, switch to code model in Roo Code
+# Paste the description and ask to implement it
+"Implement this UI based on this description: [paste vision output]"
+```
+
+**Best for:** Implementing designs, UI bugs, accessibility audits
+
+### Vision Model Limitations
+
+- **Not for code generation** — Use for understanding, not writing code
+- **OCR is good, not perfect** — Verify extracted text
+- **One image at a time** — Can't compare multiple images in one prompt
+- **8GB VRAM** — Restart Ollama if switching from 27B/32B models
 
 ---
 
@@ -700,4 +771,5 @@ source ~/.bashrc                # Reload env vars
 | Speed | qwen3.5:35b-a3b | `/model ollama_chat/qwen3.5:35b-a3b` |
 | Code | qwen2.5-coder:32b | `/model ollama_chat/qwen2.5-coder:32b` |
 | Reasoning | deepseek-r1:32b | `/model ollama_chat/deepseek-r1:32b` |
+| Vision | qwen2.5vl:7b | `ollama run qwen2.5vl:7b "prompt" image.png` |
 | Cloud | DeepSeek V3.2 | `--model openrouter/deepseek/deepseek-chat-v3-0324` |

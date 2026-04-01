@@ -11,6 +11,7 @@ The gap between proprietary AI coding agents (Claude Code, Cursor) and open-sour
 | Component | Choice | Why |
 |-----------|--------|-----|
 | **LLM** | Qwen3.5-27B | 72.4% SWE-bench, fits 24GB VRAM |
+| **Vision** | Qwen2.5VL-7B | Analyze screenshots, mockups, designs locally |
 | **IDE Agent** | Roo Code | Best VS Code integration, diff-based editing |
 | **Terminal Agent** | Aider | Git-native, automatic commits |
 | **Inference** | Ollama | Simple local serving, one-command setup |
@@ -78,6 +79,9 @@ curl -fsSL https://ollama.com/install.sh | sh
 
 # Pull the primary model
 ollama pull qwen3.5:27b
+
+# Optional: Pull vision model for image analysis
+ollama pull qwen2.5vl:7b
 
 # Install Roo Code in VS Code
 code --install-extension RooVeterinaryInc.roo-cline
