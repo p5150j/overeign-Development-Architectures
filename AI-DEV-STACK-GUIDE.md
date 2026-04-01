@@ -12,10 +12,11 @@ A complete guide to running your sovereign AI coding stack with Ollama, Roo Code
 4. [Aider (Terminal)](#aider-terminal)
 5. [Ollama Management](#ollama-management)
 6. [Workflow Patterns](#workflow-patterns)
-7. [Cloud Fallback](#cloud-fallback)
-8. [Performance Tuning](#performance-tuning)
-9. [Troubleshooting](#troubleshooting)
-10. [Configuration Reference](#configuration-reference)
+7. [Reading Live Documentation (MCP)](#reading-live-documentation-mcp)
+8. [Cloud Fallback](#cloud-fallback)
+9. [Performance Tuning](#performance-tuning)
+10. [Troubleshooting](#troubleshooting)
+11. [Configuration Reference](#configuration-reference)
 
 ---
 
@@ -369,6 +370,68 @@ aider --model openrouter/deepseek/deepseek-chat-v3-0324 src/complex_feature.py
 ```
 
 **Best for:** Complex architectural work, security-critical code
+
+---
+
+## Reading Live Documentation (MCP)
+
+Roo Code can read external documentation, API references, and web pages using the Playwright MCP server. This runs a headless browser locally — no API costs, handles JavaScript-heavy sites.
+
+### How It Works
+
+The Playwright MCP server is configured in:
+```
+~/.config/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/mcp_settings.json
+```
+
+When you paste a URL, Roo Code uses these tools:
+
+| Tool | Purpose |
+|------|---------|
+| `browser_navigate` | Open the URL |
+| `browser_snapshot` | Capture page content (accessibility tree) |
+| `browser_screenshot` | Take visual screenshot if needed |
+| `browser_click` | Interact with page elements |
+
+### Usage Examples
+
+Just paste a URL and ask:
+
+```
+tell me about this page https://firebase.google.com/docs
+
+read https://react.dev/reference/react/useState and explain the API
+
+summarize the authentication section at https://docs.github.com/en/authentication
+```
+
+Roo Code will:
+1. Navigate to the page
+2. Wait for JavaScript to render
+3. Capture the content
+4. Analyze and respond
+
+### Tips for Reading Docs
+
+- **Single pages work best** — don't ask it to crawl entire sites
+- **Be specific** — "read the useState section" vs "read all of React"
+- **JS-heavy sites work** — Playwright renders JavaScript before capturing
+- **Approve tool use** — click "Run" when Roo asks to use browser tools
+
+### Troubleshooting MCP
+
+If Playwright isn't working:
+
+```bash
+# Verify Chrome is installed for Playwright
+npx playwright install chrome
+
+# Check MCP config
+cat ~/.config/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/mcp_settings.json
+
+# Reload VS Code
+# Ctrl+Shift+P → "Developer: Reload Window"
+```
 
 ---
 

@@ -45,6 +45,19 @@ edit-format: diff
 auto-commits: true
 ```
 
+### [mcp_settings.json.example](mcp_settings.json.example)
+MCP server config for reading live documentation. Enables Playwright browser:
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp"]
+    }
+  }
+}
+```
+
 ### [ollama-override.conf](ollama-override.conf)
 Systemd service configuration for optimal Ollama performance:
 ```ini

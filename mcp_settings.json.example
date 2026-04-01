@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "/home/dev/.nvm/versions/node/v22.22.0/bin/npx",
+      "args": ["@playwright/mcp"],
+      "disabled": false,
+      "env": {
+        "PATH": "/home/dev/.nvm/versions/node/v22.22.0/bin:/usr/local/bin:/usr/bin:/bin"
+      }
+    }
+  }
+}

@@ -10,10 +10,11 @@
 4. [Pulling the Right Models](#4-pulling-the-right-models)
 5. [VS Code + Roo Code Setup](#5-vs-code--roo-code-setup)
 6. [Aider Setup (Terminal / Git Workflow)](#6-aider-setup-terminal--git-workflow)
-7. [Hybrid API Fallback (DeepSeek V3.2)](#7-hybrid-api-fallback-deepseek-v32)
-8. [Performance Tuning](#8-performance-tuning)
-9. [Daily Workflow Guide](#9-daily-workflow-guide)
-10. [Troubleshooting](#10-troubleshooting)
+7. [Reading Live Documentation (MCP + Playwright)](#7-reading-live-documentation-mcp--playwright)
+8. [Hybrid API Fallback (DeepSeek V3.2)](#8-hybrid-api-fallback-deepseek-v32)
+9. [Performance Tuning](#9-performance-tuning)
+10. [Daily Workflow Guide](#10-daily-workflow-guide)
+11. [Troubleshooting](#11-troubleshooting)
 
 ---
 
@@ -441,7 +442,86 @@ aider --show-repo-map
 
 ---
 
-## 7. Hybrid API Fallback (DeepSeek V3.2)
+## 7. Reading Live Documentation (MCP + Playwright)
+
+When you need Roo Code to read external documentation, API references, or any web page, use the Playwright MCP server. This runs a headless browser locally — no API costs, handles JavaScript-heavy sites.
+
+### Install Playwright MCP Server
+
+```bash
+# Install the MCP server
+npm install -g @playwright/mcp@latest
+
+# Install browser (requires sudo for system deps)
+sudo npx playwright install chrome
+```
+
+### Configure Roo Code to Use Playwright
+
+The MCP settings file is located at:
+```
+~/.config/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/mcp_settings.json
+```
+
+Add the Playwright server:
+
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "/home/YOUR_USER/.nvm/versions/node/v22.22.0/bin/npx",
+      "args": ["@playwright/mcp"],
+      "disabled": false,
+      "env": {
+        "PATH": "/home/YOUR_USER/.nvm/versions/node/v22.22.0/bin:/usr/local/bin:/usr/bin:/bin"
+      }
+    }
+  }
+}
+```
+
+Replace `YOUR_USER` with your actual username. If not using nvm, find your npx path with `which npx`.
+
+### Reload VS Code
+
+After configuring, reload VS Code:
+- `Ctrl+Shift+P` → "Developer: Reload Window"
+
+### Using Live Docs in Roo Code
+
+Once configured, just paste a URL and ask about it:
+
+```
+tell me about this page https://firebase.google.com/docs
+
+read https://react.dev/reference/react/useState and explain the API
+```
+
+Roo Code will:
+1. Use the `browser_navigate` tool to open the page
+2. Use `browser_snapshot` to capture the rendered content
+3. Return the page content for analysis
+
+### Available Playwright Tools
+
+| Tool | Purpose |
+|------|---------|
+| `browser_navigate` | Go to a URL |
+| `browser_snapshot` | Capture page content (accessibility tree) |
+| `browser_screenshot` | Take visual screenshot |
+| `browser_click` | Click elements |
+| `browser_type` | Type into inputs |
+
+### Tips for Reading Docs
+
+- **Single pages work best** — don't ask it to crawl entire doc sites
+- **Be specific** — "read the useState section" vs "read all of React docs"
+- **JS-heavy sites work** — Playwright renders JavaScript before capturing
+- **Local only** — no API costs, runs entirely on your machine
+
+---
+
+## 8. Hybrid API Fallback (DeepSeek V3.2)
 
 For the hard 20% of tasks — complex multi-file architectural refactors, security-sensitive logic, very long context sessions — use a cheap cloud API instead of burning time on local inference. DeepSeek V3.2 at $0.27/million input tokens is the consensus choice.
 
