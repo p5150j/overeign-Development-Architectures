@@ -173,10 +173,54 @@ Enable Diff Editing: Yes (saves tokens)
 
 ### Memory Bank
 
-Roo Code can persist context across sessions:
-1. Open settings → Memory Bank
-2. Save key project context
-3. Auto-loads on next session
+Roo Code can persist project context across sessions using a `.roo/memory-bank/` directory.
+
+**Setting up Memory Bank:**
+
+```bash
+# Create memory bank in your project root
+mkdir -p /your/project/.roo/memory-bank
+
+# Create project brief (required)
+touch /your/project/.roo/memory-bank/projectBrief.md
+```
+
+**Recommended files:**
+
+| File | Purpose |
+|------|---------|
+| `projectBrief.md` | Project overview, stack, architecture |
+| `techContext.md` | Technical details, integrations, APIs |
+| `conventions.md` | Code style, naming, patterns |
+| `currentFocus.md` | What you're actively working on |
+
+**Example projectBrief.md:**
+```markdown
+# Project: MyApp
+
+## Stack
+- Frontend: React + TypeScript
+- Backend: Python FastAPI
+- Database: PostgreSQL
+
+## Architecture
+Monorepo with /frontend and /backend directories.
+API follows REST conventions.
+
+## Conventions
+- Use functional components
+- snake_case for Python, camelCase for JS
+- All API routes prefixed with /api/v1
+
+## Current Focus
+Implementing user authentication flow
+```
+
+**How it works:**
+- Roo Code reads all `.md` files in `.roo/memory-bank/` at session start
+- Context persists even after VS Code restarts
+- Update files as your project evolves
+- Add `.roo/` to `.gitignore` if context contains sensitive info
 
 ---
 

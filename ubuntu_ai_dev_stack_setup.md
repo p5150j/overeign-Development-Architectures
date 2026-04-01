@@ -301,7 +301,23 @@ cat > /your/project/.roo/memory-bank/projectBrief.md << 'EOF'
 EOF
 ```
 
-Roo Code will automatically read and maintain this Memory Bank across sessions.
+3. Optionally add more context files:
+
+```bash
+# Technical context (APIs, integrations, dependencies)
+touch /your/project/.roo/memory-bank/techContext.md
+
+# Code conventions (style guide, patterns)
+touch /your/project/.roo/memory-bank/conventions.md
+```
+
+Roo Code automatically reads all `.md` files in the memory-bank directory at session start.
+
+**Memory Bank tips:**
+- Update `currentFocus` section as you switch tasks
+- Keep files concise — more context = more tokens per request
+- Add `.roo/` to `.gitignore` if it contains sensitive project details
+- Memory Bank persists even after VS Code restarts
 
 ### Custom Modes — What They Are and How to Use Them
 Roo Code ships with these built-in modes (switch with the mode selector at the top of the panel):
