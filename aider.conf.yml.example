@@ -1,0 +1,32 @@
+# Aider Configuration for Ollama Local Models
+# Copy to ~/.aider.conf.yml to use
+#
+# Primary: qwen3.5:27b via Ollama
+
+# Model settings
+model: ollama_chat/qwen3.5:27b
+weak-model: ollama_chat/qwen3.5:35b-a3b
+editor-model: ollama_chat/qwen2.5-coder:32b
+
+# Editor settings
+edit-format: diff
+auto-commits: true
+pretty: true
+stream: true
+
+# Context settings
+map-tokens: 2048
+map-refresh: auto
+
+# Performance
+cache-prompts: true
+check-update: false
+
+# Git settings
+attribute-author: true
+attribute-committer: false
+gitignore: true
+
+# UI settings
+dark-mode: true
+show-model-warnings: false
