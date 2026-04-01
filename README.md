@@ -35,6 +35,16 @@ Quick reference for daily use:
 ### [ubuntu_ai_dev_stack_setup.md](ubuntu_ai_dev_stack_setup.md)
 Original step-by-step setup documentation for Ubuntu + NVIDIA GPU environments.
 
+### [aider.conf.yml.example](aider.conf.yml.example)
+Aider configuration for Ollama. Copy to `~/.aider.conf.yml`:
+```yaml
+model: ollama_chat/qwen3.5:27b
+weak-model: ollama_chat/qwen3.5:35b-a3b
+editor-model: ollama_chat/qwen2.5-coder:32b
+edit-format: diff
+auto-commits: true
+```
+
 ### [ollama-override.conf](ollama-override.conf)
 Systemd service configuration for optimal Ollama performance:
 ```ini
